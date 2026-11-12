@@ -16,4 +16,6 @@ void Next(Board *self);
 
 void Display(Board *self);
 
+void InitiateLivingCells(Board *self, Position *positions, int ln);
+
 #endif

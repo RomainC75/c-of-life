@@ -1,7 +1,7 @@
 #include "../position.h"
 #include <assert.h>
 
-int main(void){
+void test_position_init(void){
     PositionResult pr = CreatePosition(10, -23);
     assert(pr.error == POSITION_INVALID_COORDINATES);
     

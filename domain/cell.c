@@ -4,7 +4,6 @@
 #include "./cell.h"
 #include "./board.h"
 
-
 struct Cell{
     Position position;
     Position *neighbourPositions;
@@ -66,7 +65,6 @@ void DetermineState(Cell *self, Board *board){
             aliveCellQty ++;
         }
     }
-    printf("--# %d\n", aliveCellQty);
     // ! verify 
     if (aliveCellQty>1){
         self->isAlive = 1;

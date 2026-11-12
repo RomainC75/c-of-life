@@ -44,9 +44,10 @@ static Cell ***GenerateCells(int xLen, int yLen){
     return cells;
 }
 
-void InitiateLivingCells(Board *self, Dimension *dimensions, int ln){
+void InitiateLivingCells(Board *self, Position *positions, int ln){
     for (int i=0 ; i<ln ; i++){
-        Cell *cell = self->cells[dimensions->y][dimensions->x];
+        Position d = positions[i];
+        Cell *cell = self->cells[d.y][d.x];
         SetCellAlive(cell);
     }
 }
