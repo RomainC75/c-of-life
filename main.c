@@ -11,13 +11,13 @@ int main(){
     Next(b);
     Display(b);
     
-    // printf("\n");
+    printf("\n");
     
-    // Next(b);
-    // Display(b);
+    Next(b);
+    Display(b);
 
-    // printf("\n");
+    printf("\n");
 
-    // Next(b);
-    // Display(b);
+    Next(b);
+    Display(b);
 }
