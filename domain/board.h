@@ -14,4 +14,6 @@ Cell *GetCell(Board *self, Position p);
 
 void Next(Board *self);
 
+void Display(Board *self);
+
 #endif

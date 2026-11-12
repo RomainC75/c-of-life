@@ -1,7 +1,7 @@
 #include "./dimension.h"
 
 DimensionResult CreateDimension(int x, int y){
-    if (x<10 || y<10){
+    if (x>10 || y>10){
         return (DimensionResult){
             .error = DIMENSION_INVALID
         };

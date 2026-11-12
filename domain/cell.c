@@ -45,7 +45,7 @@ NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension)
     for (int x=GetX(self->position)-1 ; x<=GetX(self->position)+1 ; x++){
         for (int y=GetY(self->position)-1 ; y<=GetY(self->position)+1 ; y++){
             PositionResult nbRes = CreatePosition(x,y);
-            if (nbRes.error == POSITION_OK && IsSamePosition(self->position, nbRes.position) !=0){
+            if (nbRes.error == POSITION_OK && IsSamePosition(self->position, nbRes.position) !=0 && x<boardDimension.x && y<boardDimension.y){
                 nPositions[index] = nbRes.position;
                 index ++;
             }

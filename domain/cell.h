@@ -28,7 +28,7 @@ Position CellPosition(Cell *cell);
 
 NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension);
 
-void DetermineState(Cell *self, Board *board);
+void DetermineState(Board *board, Cell *self);
 
 
 #endif
