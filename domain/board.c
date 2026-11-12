@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "./board.h"
+#include "./cell.h"
 
 struct Board {
     Dimension dimension;
@@ -19,7 +20,6 @@ Board *CreateBoard(int xLen, int yLen){
     
     board->cells = GenerateCells(xLen, yLen);
     DimensionResult dimensionRes = CreateDimension(xLen, yLen);
-    printf("creation : %d / %d\n", dimensionRes.dimension.x, dimensionRes.dimension.y);
     board->dimension = dimensionRes.dimension;
     return board;
 }
@@ -37,13 +37,18 @@ static Cell ***GenerateCells(int xLen, int yLen){
             if (dRes.error != DIMENSION_OK){
 
             }
-            printf("X ");   
             line[x]=CreateCell(pRes.position, dRes.dimension);
         }
-        printf("\n");
         cells[y]=line;
     }
     return cells;
+}
+
+void InitiateLivingCells(Board *self, Dimension *dimensions, int ln){
+    for (int i=0 ; i<ln ; i++){
+        Cell *cell = self->cells[dimensions->y][dimensions->x];
+        SetCellAlive(cell);
+    }
 }
 
 Cell *GetCell(Board *self, Position p){
@@ -59,7 +64,6 @@ void Display(Board *self){
         for (int x = 0 ; x < dimension.x ; x++ ){
             Cell *cell = self->cells[x][y];
             int state = IsAlive(cell);
-            printf("\n");
             if (state == 0){
                 printf(" X ");
             }else {
@@ -70,14 +74,12 @@ void Display(Board *self){
     }
 }
 
-static void iterate(Board *self, void (*operate)(Board *board, Cell *cell)){
+static void iterate(Board *self, void (*operate)(Cell *cell, Board *board)){
     Dimension dimension = self->dimension;
     for (int y = 0 ; y < dimension.y ; y++ ){
-        printf("--\n");
         for (int x = 0 ; x < dimension.x ; x++ ){
-            printf(" ++\n");
             Cell *cell = self->cells[x][y];
-            operate(self, cell);
+            operate(cell, self);
         }
     }
 }

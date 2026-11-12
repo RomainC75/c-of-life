@@ -1,10 +1,11 @@
 {
   "configurations": [
     {
-      "name": "Linux",
-      "compilerPath": "/usr/bin/gcc",
+      "name": "Mac",
+      "includePath": ["${workspaceFolder}/**"],
+      "compilerPath": "/usr/bin/clang",
       "cStandard": "c11",
-      "intelliSenseMode": "linux-gcc-x64"
+      "intelliSenseMode": "macos-clang-arm64"
     }
   ],
   "version": 4

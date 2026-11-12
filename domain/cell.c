@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "./cell.h"
 #include "./board.h"
@@ -57,7 +58,7 @@ NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension)
     };
 }
 
-void DetermineState(Board *board, Cell *self){
+void DetermineState(Cell *self, Board *board){
     int aliveCellQty = 0;
     for (int npI = 0 ; npI<self->neighbourPositionLn ; npI++){
         Cell *c = GetCell(board, self->neighbourPositions[npI]);
@@ -65,6 +66,7 @@ void DetermineState(Board *board, Cell *self){
             aliveCellQty ++;
         }
     }
+    printf("--# %d\n", aliveCellQty);
     // ! verify 
     if (aliveCellQty>1){
         self->isAlive = 1;
