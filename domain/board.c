@@ -85,3 +85,19 @@ static void iterate(Board *self, void (*operate)(Cell *cell, Board *board)){
 void Next(Board *self){
     iterate(self, SetStateAccordingToRules);
 }
+
+
+void DisplayCells(Board *self, int (display)(int, int, const char *, ...)){
+    Dimension dimension = self->dimension;
+    for (int y = 0 ; y < dimension.y ; y++ ){
+        for (int x = 0 ; x < dimension.x ; x++ ){
+            Cell *cell = self->cells[x][y];
+            Position p = CellPosition(cell);
+            if (GetCellState(cell) == IS_DEAD){
+                display(p.x, p.y, ".");
+            }else {
+                display(p.x, p.y, "O");
+            }
+        }
+    }
+}

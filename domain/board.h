@@ -8,6 +8,7 @@
 // private
 typedef struct Board Board;
 
+
 Board *CreateBoard(int xLen, int yLen);
 
 Cell *GetCell(Board *self, Position p);
@@ -17,5 +18,7 @@ void Next(Board *self);
 void Display(Board *self);
 
 void InitiateLivingCells(Board *self, Position *positions, int ln);
+
+void DisplayCells(Board *self, int (display)(int, int, const char *, ...));
 
 #endif
