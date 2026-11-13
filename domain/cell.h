@@ -10,6 +10,11 @@ typedef struct Cell Cell;
 // (board.h includes cell.h, including it back would create a cycle).
 typedef struct Board Board;
 
+typedef enum {
+    IS_DEAD,
+    IS_ALIVE
+} CellState;
+
 typedef struct {
     Position *positions;
     int ln;
@@ -20,7 +25,7 @@ Cell *CreateCell(Position position, Dimension boardDimensions);
 
 void SetCellAlive(Cell *cell);
 
-int IsAlive(Cell *cell);
+CellState GetCellState(Cell *cell);
 
 void SetCellDead(Cell *cell);
 
@@ -29,6 +34,8 @@ Position CellPosition(Cell *cell);
 NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension);
 
 void DetermineState(Cell *self, Board *board);
+
+void SetStateAccordingToRules(Cell *self, Board *board);
 
 
 #endif

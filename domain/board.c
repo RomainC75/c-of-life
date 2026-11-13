@@ -9,7 +9,7 @@ struct Board {
     Cell ***cells;
 };
 
-static Cell ***GenerateCells(int xLen, int yLen);
+static Cell ***GenerateCells(int xLen, int yLen, Dimension dimension);
 
 Board *CreateBoard(int xLen, int yLen){
     if (xLen <0 || yLen <0){
@@ -18,13 +18,13 @@ Board *CreateBoard(int xLen, int yLen){
 
     Board *board = (Board *)malloc(sizeof(Board));
     
-    board->cells = GenerateCells(xLen, yLen);
     DimensionResult dimensionRes = CreateDimension(xLen, yLen);
+    board->cells = GenerateCells(xLen, yLen, dimensionRes.dimension);
     board->dimension = dimensionRes.dimension;
     return board;
 }
 
-static Cell ***GenerateCells(int xLen, int yLen){
+static Cell ***GenerateCells(int xLen, int yLen, Dimension dimension){
     Cell ***cells = (Cell ***)malloc(sizeof(Cell**)*yLen);
     for (int y = 0 ; y<yLen ; y++ ){
         Cell **line = (Cell **)malloc(sizeof(Cell*)*xLen);
@@ -33,11 +33,8 @@ static Cell ***GenerateCells(int xLen, int yLen){
             if (pRes.error != POSITION_OK){
 
             }
-            DimensionResult dRes = CreateDimension(x,y);
-            if (dRes.error != DIMENSION_OK){
-
-            }
-            line[x]=CreateCell(pRes.position, dRes.dimension);
+            
+            line[x]=CreateCell(pRes.position, dimension);
         }
         cells[y]=line;
     }
@@ -64,8 +61,8 @@ void Display(Board *self){
     for (int y = 0 ; y < dimension.y ; y++ ){
         for (int x = 0 ; x < dimension.x ; x++ ){
             Cell *cell = self->cells[x][y];
-            int state = IsAlive(cell);
-            if (state == 0){
+            CellState state = GetCellState(cell);
+            if (state == IS_DEAD){
                 printf(" X ");
             }else {
                 printf(" O ");
@@ -86,5 +83,5 @@ static void iterate(Board *self, void (*operate)(Cell *cell, Board *board)){
 }
 
 void Next(Board *self){
-    iterate(self, DetermineState);
+    iterate(self, SetStateAccordingToRules);
 }

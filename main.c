@@ -3,22 +3,21 @@
 #include <stdlib.h>
 
 void SetAlive(Board *board){
-    PositionResult pr1 = CreatePosition(2,3);
-    PositionResult pr2 = CreatePosition(2,4);
-    PositionResult pr3 = CreatePosition(2,5);
-    PositionResult pr4 = CreatePosition(1,4);
-    int positionLn =4;
     
-    Position *positions = (Position *)malloc(sizeof(Position)*2);
-    positions[0]=pr1.position;
-    positions[1]=pr2.position;
-    positions[2]=pr3.position;
-    positions[3]=pr4.position;
+    int positionLn =5;
+    Position positions[] = {
+        {3, 3},
+        {3, 4},
+        {4, 4},
+        {4, 5},
+        {5, 5}
+    };
+    
     InitiateLivingCells(board, positions, positionLn);
 }
 
 int main(){
-    Board *b = CreateBoard(8,8);
+    Board *b = CreateBoard(10,10);
     SetAlive(b);
     Display(b);
     

@@ -27,9 +27,9 @@ void test_board_init(){
     Board *b = CreateBoard(5,5);
 
     Cell *c1 = GetCell(b, pr1);
-    assert(IsAlive(c1) == 0);
+    assert(IsAlive(c1) == IS_DEAD);
 
     SetAlive(b);
     Cell *c2 = GetCell(b, pr1);
-    assert(IsAlive(c2) == 1);
+    assert(IsAlive(c2) == IS_ALIVE);
 }

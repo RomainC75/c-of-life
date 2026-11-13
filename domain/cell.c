@@ -8,14 +8,14 @@ struct Cell{
     Position position;
     Position *neighbourPositions;
     int neighbourPositionLn;
-    int isAlive;
+    CellState state;
 };
 
 Cell *CreateCell(Position position, Dimension boardDimensions){
     Cell *cell = (Cell *)malloc(sizeof(Cell));
 
     cell -> position = position;
-    cell -> isAlive = 0;
+    cell -> state = 0;
     NeighbourPositionResult nbRes = NeighbourPositions(cell, boardDimensions);
     cell -> neighbourPositions = nbRes.positions;
     cell -> neighbourPositionLn = nbRes.ln;
@@ -24,15 +24,15 @@ Cell *CreateCell(Position position, Dimension boardDimensions){
 }
 
 void SetCellAlive(Cell *cell){
-    cell -> isAlive = 1;
-}
-
-int IsAlive(Cell *cell){
-    return cell->isAlive;
+    cell -> state = IS_ALIVE;
 }
 
 void SetCellDead(Cell *cell){
-    cell -> isAlive = 0;
+    cell -> state = IS_DEAD;
+}
+
+CellState GetCellState(Cell *cell){
+    return cell->state;
 }
 
 Position CellPosition(Cell *cell){
@@ -57,21 +57,31 @@ NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension)
     };
 }
 
-void DetermineState(Cell *self, Board *board){
-    int aliveCellQty = 0;
+int countNeighbours(Cell *self, Board *board){
+    int livingNeighbourQty = 0;
     for (int npI = 0 ; npI<self->neighbourPositionLn ; npI++){
         Cell *c = GetCell(board, self->neighbourPositions[npI]);
-        if (IsAlive(c)){
-            aliveCellQty ++;
+        if (GetCellState(c) == IS_ALIVE){
+            livingNeighbourQty ++;
         }
     }
-    // ! verify 
-    if (aliveCellQty>1){
-        self->isAlive = 1;
-    } else {
-        self->isAlive = 0;
-    }
+    return livingNeighbourQty;
+}
 
+void SetStateAccordingToRules(Cell *self, Board *board){
+    int livingNeighbourQty = countNeighbours(self, board);
+    // underpopulation or overpopulation
+    if (livingNeighbourQty<2 || livingNeighbourQty>3){
+        SetCellDead(self);
+    } else if (GetCellState(self) == IS_ALIVE && (livingNeighbourQty ==2 || livingNeighbourQty ==3 ))
+    {   
+        // stay alive
+        return ;
+    // reproduction
+    } else if (GetCellState(self) == IS_DEAD && livingNeighbourQty == 3)
+     {
+        SetCellAlive(self);
+    }
 }
 
 
