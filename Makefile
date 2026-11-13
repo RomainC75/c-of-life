@@ -42,3 +42,19 @@ $(TEST_BIN): $(DOMAIN_SRC) $(TEST_SRC) | $(BUILD_DIR)
 
 clean:
 	rm -rf $(BUILD_DIR)
+
+# Used by the VS Code debugger (.vscode/tasks.json) — do not remove
+DEBUG_DIR = $(BUILD_DIR)/debug
+DEBUG_SRC = main.c $(DOMAIN_SRC)
+DEBUG_OBJ = $(patsubst %.c,$(DEBUG_DIR)/%.o,$(DEBUG_SRC))
+
+$(DEBUG_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	clang -std=c11 -Wall -g -O0 -MMD -MP -c $< -o $@
+
+build-debug: $(DEBUG_OBJ)
+	clang $(DEBUG_OBJ) -o program && dsymutil program
+
+.PHONY: build-debug
+
+-include $(DEBUG_OBJ:.o=.d)
