@@ -29,6 +29,10 @@ void SetCellDead(Cell *cell){
     cell -> state = IS_DEAD;
 }
 
+void CopyCellState(Cell *from, Cell *to){
+    to->state=from->state;
+}
+
 CellState GetCellState(Cell *cell){
     return cell->state;
 }
@@ -70,29 +74,29 @@ int countNeighboursAlive(Cell *self, Board *board){
 }
 
 
-void DefineIfCellSurvives(Cell *self, Board *board){
+void DefineIfCellSurvives(Cell *self, Cell *nextCell, Board *board){
     if (self->state == IS_DEAD){
         return;
     }
     int livingNeighbourQty = countNeighboursAlive(self, board);
-    if (ShouldDieIfSolitude(self, livingNeighbourQty) == SHOULD_DIE){
+    if (ShouldDieIfSolitude(nextCell, livingNeighbourQty) == SHOULD_DIE){
         return;
     }
-    ShouldDieIfOverpopulation(self, livingNeighbourQty);
+    ShouldDieIfOverpopulation(nextCell, livingNeighbourQty);
 }
 
-void DefineIfCellIsBorn(Cell *self, Board *board){
+void DefineIfCellIsBorn(Cell *self, Cell *nextCell, Board *board){
     if (self->state == IS_ALIVE){
         return ;
     }
-    Position p = CellPosition(self);
-    if (p.x == 6 && p.y == 6){
-        printf("living Neighboutd qty : \n");
-    }
+    // Position p = CellPosition(self);
+    // if (p.x == 6 && p.y == 6){
+    //     printf("living Neighboutd qty : \n");
+    // }
     int livingNeighbourQty = countNeighboursAlive(self, board);
 
 
-    ShouldACellBeBorn(self, livingNeighbourQty);
+    ShouldACellBeBorn(nextCell, livingNeighbourQty);
 }
 
 

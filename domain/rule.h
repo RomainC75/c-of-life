@@ -8,11 +8,11 @@ typedef enum {
     SHOULD_DIE
 } IS_SHOULD_DIE;
 
-typedef int (*RuleFn)(Cell *cell, int livingNeighbourQty);
+typedef int (*RuleFn)(Cell *nextCell,int livingNeighbourQty);
 
-IS_SHOULD_DIE ShouldDieIfSolitude(Cell *cell, int livingNeighoutQty);
-IS_SHOULD_DIE ShouldDieIfOverpopulation(Cell *cell, int livingNeighoutQty);
+IS_SHOULD_DIE ShouldDieIfSolitude(Cell *nextCell, int livingNeighoutQty);
+IS_SHOULD_DIE ShouldDieIfOverpopulation(Cell *nextCell, int livingNeighoutQty);
 
-int ShouldACellBeBorn(Cell *cell, int livingNeighoutQty);
+int ShouldACellBeBorn(Cell *nextCell, int livingNeighoutQty);
 
 #endif

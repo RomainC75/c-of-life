@@ -7,6 +7,7 @@
 struct Board {
     Dimension dimension;
     Cell ***cells;
+    Cell ***nextCells;
 };
 
 static Cell ***GenerateCells(int xLen, int yLen, Dimension dimension);
@@ -24,6 +25,7 @@ Board *CreateBoard(int xLen, int yLen){
         exit(DIMENSION_INVALID);
     }
     board->cells = GenerateCells(xLen, yLen, dimensionRes.dimension);
+    board->nextCells = GenerateCells(xLen, yLen, dimensionRes.dimension);
     board->dimension = dimensionRes.dimension;
     return board;
 }
@@ -79,19 +81,29 @@ void Display(Board *self){
     }
 }
 
-static void iterate(Board *self, void (*operate)(Cell *cell, Board *board)){
+static void iterate(Board *self, CellOperation *ops, int opsLn){
     Dimension dimension = self->dimension;
     for (int y = 0 ; y < dimension.y ; y++ ){
         for (int x = 0 ; x < dimension.x ; x++ ){
             Cell *cell = self->cells[y][x];
-            operate(cell, self);
+            Cell *nextCell = self->nextCells[y][x];
+            for (int i = 0 ; i< opsLn ; i++){
+                ops[i](cell, nextCell, self);
+            }
         }
     }
 }
 
+void CopyFromNext(Cell *cell, Cell *nextCell, Board *board){
+    CopyCellState(nextCell, cell);
+}
+
 void Next(Board *self){
-    iterate(self, DefineIfCellIsBorn); 
-    iterate(self, DefineIfCellSurvives);
+    CellOperation ops1[] = {DefineIfCellIsBorn, DefineIfCellSurvives};
+    iterate(self, ops1, 2); 
+    
+    CellOperation ops2[] = {CopyFromNext};
+    iterate(self, ops2, 1);
 }
 
 void DisplayCells(Board *self, int (display)(int, int, const char *, ...)){
