@@ -4,12 +4,8 @@ CFLAGS = -Wall -Wextra -Werror -std=c11 -g
 
 BUILD_DIR = build
 
-DOMAIN_SRC = \
-	domain/position.c \
-	domain/dimension.c \
-	domain/cell.c \
-	domain/board.c \
-	domain/display.c
+# Every .c file in domain/ (new files are picked up automatically)
+DOMAIN_SRC = $(wildcard domain/*.c)
 
 TEST_SRC = \
 	domain/tests/test_position.c \

@@ -6,37 +6,21 @@
 
 void SetAlive(Board *board){
     
-    int positionLn =7;
+    int positionLn =5;
     Position positions[] = {
+        {4, 1},
+        {5, 2},
         {3, 3},
-        {3, 4},
-        {4, 4},
-        {4, 5},
-        {5, 5},
-        {6, 5},
-        {7, 5},
+        {4, 3},
+        {5, 3},
     };
     
     InitiateLivingCells(board, positions, positionLn);
 }
 
 int main(){
-    Board *b = CreateBoard(10,10);
+    Board *b = CreateBoard(20,20);
     SetAlive(b);
+
     NewDisplay(b);
-    // Display(b);
-    
-    // printf("\n");
-    // Next(b);
-    // Display(b);
-    
-    // printf("\n");
-    
-    // Next(b);
-    // Display(b);
-
-    // printf("\n");
-
-    // Next(b);
-    // Display(b);
 }

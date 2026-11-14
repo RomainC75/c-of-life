@@ -3,11 +3,11 @@
 
 #include "./cell.h"
 #include "./board.h"
+#include "./rule.h"
+
 
 struct Cell{
     Position position;
-    Position *neighbourPositions;
-    int neighbourPositionLn;
     CellState state;
 };
 
@@ -16,9 +16,7 @@ Cell *CreateCell(Position position, Dimension boardDimensions){
 
     cell -> position = position;
     cell -> state = 0;
-    NeighbourPositionResult nbRes = NeighbourPositions(cell, boardDimensions);
-    cell -> neighbourPositions = nbRes.positions;
-    cell -> neighbourPositionLn = nbRes.ln;
+
 
     return cell;
 }
@@ -42,10 +40,11 @@ Position CellPosition(Cell *cell){
 NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension){
     Position *nPositions = (Position *)malloc(sizeof(Position)*9);
     int index = 0;
-    for (int x=GetX(self->position)-1 ; x<=GetX(self->position)+1 ; x++){
-        for (int y=GetY(self->position)-1 ; y<=GetY(self->position)+1 ; y++){
+    Position selfPosition = CellPosition(self);
+    for (int y=GetY(selfPosition)-1 ; y<=GetY(selfPosition)+1 ; y++){
+        for (int x=GetX(selfPosition)-1 ; x<=GetX(selfPosition)+1 ; x++){
             PositionResult nbRes = CreatePosition(x,y);
-            if (nbRes.error == POSITION_OK && IsSamePosition(self->position, nbRes.position) !=0 && x<boardDimension.x && y<boardDimension.y){
+            if (nbRes.error == POSITION_OK && IsSamePosition(self->position, nbRes.position) == IS_POSITION_DIFFERENT && x<boardDimension.x && y<boardDimension.y){
                 nPositions[index] = nbRes.position;
                 index ++;
             }
@@ -57,10 +56,12 @@ NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension)
     };
 }
 
-int countNeighbours(Cell *self, Board *board){
+
+int countNeighboursAlive(Cell *self, Board *board){
     int livingNeighbourQty = 0;
-    for (int npI = 0 ; npI<self->neighbourPositionLn ; npI++){
-        Cell *c = GetCell(board, self->neighbourPositions[npI]);
+    NeighbourPositionResult nr = NeighbourPositions(self, BoardDimension(board));
+    for (int npI = 0 ; npI < nr.ln ; npI++){
+        Cell *c = GetCell(board, nr.positions[npI]);
         if (GetCellState(c) == IS_ALIVE){
             livingNeighbourQty ++;
         }
@@ -68,20 +69,32 @@ int countNeighbours(Cell *self, Board *board){
     return livingNeighbourQty;
 }
 
-void SetStateAccordingToRules(Cell *self, Board *board){
-    int livingNeighbourQty = countNeighbours(self, board);
-    // underpopulation or overpopulation
-    if (livingNeighbourQty<2 || livingNeighbourQty>3){
-        SetCellDead(self);
-    } else if (GetCellState(self) == IS_ALIVE && (livingNeighbourQty ==2 || livingNeighbourQty ==3 ))
-    {   
-        // stay alive
-        return ;
-    // reproduction
-    } else if (GetCellState(self) == IS_DEAD && livingNeighbourQty == 3)
-     {
-        SetCellAlive(self);
+
+void DefineIfCellSurvives(Cell *self, Board *board){
+    if (self->state == IS_DEAD){
+        return;
     }
+    int livingNeighbourQty = countNeighboursAlive(self, board);
+    if (ShouldDieIfSolitude(self, livingNeighbourQty) == SHOULD_DIE){
+        return;
+    }
+    ShouldDieIfOverpopulation(self, livingNeighbourQty);
 }
+
+void DefineIfCellIsBorn(Cell *self, Board *board){
+    if (self->state == IS_ALIVE){
+        return ;
+    }
+    Position p = CellPosition(self);
+    if (p.x == 6 && p.y == 6){
+        printf("living Neighboutd qty : \n");
+    }
+    int livingNeighbourQty = countNeighboursAlive(self, board);
+
+
+    ShouldACellBeBorn(self, livingNeighbourQty);
+}
+
+
 
 

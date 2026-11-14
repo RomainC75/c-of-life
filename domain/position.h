@@ -11,6 +11,11 @@ typedef enum {
     POSITION_INVALID_COORDINATES,
 } PositionError;
 
+typedef enum {
+    IS_POSITION_DIFFERENT,
+    IS_SAME_POSITION,
+} IsSamePositionE;
+
 typedef struct {
     Position position;
     PositionError error;
@@ -22,6 +27,6 @@ int GetX(Position p);
 
 int GetY(Position p);
 
-int IsSamePosition(Position self, Position other);
+IsSamePositionE IsSamePosition(Position self, Position other);
 
 #endif

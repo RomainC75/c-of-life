@@ -35,7 +35,8 @@ NeighbourPositionResult NeighbourPositions(Cell *self, Dimension boardDimension)
 
 void DetermineState(Cell *self, Board *board);
 
-void SetStateAccordingToRules(Cell *self, Board *board);
+void DefineIfCellSurvives(Cell *self, Board *board);
 
+void DefineIfCellIsBorn(Cell *self, Board *board);
 
 #endif

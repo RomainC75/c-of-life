@@ -8,16 +8,19 @@
 #define DELAY 1300000
 
 void NewDisplay(Board *b){
-     int x = 0, y = 0;
+     int x = 0;
 
-
- initscr();
- noecho();
- curs_set(FALSE);
+    initscr();
+    noecho();
+     curs_set(FALSE);
 
  while(1) {
     if (x==10){
         break;  
+    }
+
+    if (x == 8){
+      printf("lkjsdf");
     }
 
     clear(); // Clear the screen of all
@@ -26,8 +29,8 @@ void NewDisplay(Board *b){
 
     char buffer[30];
     sprintf(buffer,"%d", x);
-    mvprintw(12,12, buffer);
-    
+    mvprintw(21,21, buffer);
+   
     refresh();
     Next(b);
 

@@ -13,6 +13,8 @@ Board *CreateBoard(int xLen, int yLen);
 
 Cell *GetCell(Board *self, Position p);
 
+Dimension BoardDimension(Board *self);
+
 void Next(Board *self);
 
 void Display(Board *self);
