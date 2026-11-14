@@ -3,6 +3,7 @@
 
 #include "./board.h"
 #include "./cell.h"
+#include "./rule.h"
 
 struct Board {
     Dimension dimension;
@@ -49,11 +50,12 @@ static Cell ***GenerateCells(int xLen, int yLen, Dimension dimension){
 void InitiateLivingCells(Board *self, Position *positions, int ln){
     for (int i=0 ; i<ln ; i++){
         Position d = positions[i];
+
         Cell *cell = self->cells[d.y][d.x];
         SetCellAlive(cell);
     }
 }
-
+ 
 Dimension BoardDimension(Board *self){
     return self->dimension;
 }
@@ -81,6 +83,42 @@ void Display(Board *self){
     }
 }
 
+int countNeighboursAlive(Cell *self, Board *board){
+    int livingNeighbourQty = 0;
+    NeighbourPositionResult nr = NeighbourPositions(self, BoardDimension(board));
+    for (int npI = 0 ; npI < nr.ln ; npI++){
+        Cell *c = GetCell(board, nr.positions[npI]);
+        if (GetCellState(c) == IS_ALIVE){
+            livingNeighbourQty ++;
+        }
+    }
+    return livingNeighbourQty;
+}
+
+
+void DefineIfCellSurvives(Cell *self, Cell *nextCell, Board *board){
+    if (GetCellState(self) == IS_DEAD){
+        return;
+    }
+    int livingNeighbourQty = countNeighboursAlive(self, board);
+    if (ShouldDieIfSolitude(nextCell, livingNeighbourQty) == SHOULD_DIE){
+        return;
+    }
+    ShouldDieIfOverpopulation(nextCell, livingNeighbourQty);
+}
+
+void DefineIfCellIsBorn(Cell *deadCell, Cell *nextCell, Board *board){
+    if (GetCellState(deadCell) == IS_ALIVE){
+        return ;
+    }
+    // Position p = CellPosition(deadCell);
+    // if (p.x == 6 && p.y == 6){
+    //     printf("living Neighboutd qty : \n");
+    // }
+    int livingNeighbourQty = countNeighboursAlive(deadCell, board);
+    ShouldACellBeBorn(nextCell, livingNeighbourQty);
+}
+
 static void iterate(Board *self, CellOperation *ops, int opsLn){
     Dimension dimension = self->dimension;
     for (int y = 0 ; y < dimension.y ; y++ ){
@@ -94,16 +132,23 @@ static void iterate(Board *self, CellOperation *ops, int opsLn){
     }
 }
 
+void CopyToNext(Cell *cell, Cell *nextCell, Board *board){
+    CopyCellState(cell, nextCell);
+}
+
 void CopyFromNext(Cell *cell, Cell *nextCell, Board *board){
     CopyCellState(nextCell, cell);
 }
 
 void Next(Board *self){
-    CellOperation ops1[] = {DefineIfCellIsBorn, DefineIfCellSurvives};
-    iterate(self, ops1, 2); 
-    
-    CellOperation ops2[] = {CopyFromNext};
-    iterate(self, ops2, 1);
+    CellOperation ops1[] = {CopyToNext};
+    iterate(self, ops1, 1); 
+
+    CellOperation ops2[] = {DefineIfCellIsBorn, DefineIfCellSurvives};
+    iterate(self, ops2, 2); 
+
+    CellOperation ops3[] = {CopyFromNext};
+    iterate(self, ops3, 1);
 }
 
 void DisplayCells(Board *self, int (display)(int, int, const char *, ...)){
@@ -120,3 +165,4 @@ void DisplayCells(Board *self, int (display)(int, int, const char *, ...)){
         }
     }
 }
+
